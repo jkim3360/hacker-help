@@ -1,0 +1,11 @@
+export const gradient = ['#1B1832', '#03030A']
+export const primary = '#efefef'
+export const secondary = '#1B1832'
+export const textColor = '#B9CDD8'
+export const highlightColor = '#23EAA4'
+export const disabled = '#303549'
+export const border = '#319E57'
+export const danger = '#F44748'
+export const background = '#232041'
+export const cardColor = '#353C5C'
+export const placeHolderColor = 'rgba(185,205,216,0.4)'
