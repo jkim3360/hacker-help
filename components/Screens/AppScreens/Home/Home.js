@@ -1,48 +1,103 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Linking } from 'react-native'
 import { Button, Header, Input, ViewContainer } from '../../../common/'
 import axios from 'axios'
 
 export default class HomeScreen extends Component {
-  static navigationOptions = {
-    title: 'Hacker Help',
-    topStoriesId: []
+  constructor() {
+    super()
+    this.state = {
+      topStoriesIds: [],
+      topStoriesData: []
+    }
   }
 
+  static navigationOptions = {
+    title: 'Hacker Help'
+  }
   async componentDidMount() {
     await this.getTopStoriesId()
-    await this.getStories()
+    await this.getTopStories()
+    // console.log(this.state.topStoriesdata)
   }
 
   getTopStoriesId = async () => {
-    const topStoriesId = await axios.get(
+    const topStoriesIds = await axios.get(
       'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
     )
+    // console.log(topStoriesIds.data)
     this.setState({
-      topStoriesId: topStoriesId
+      topStoriesIds: topStoriesIds.data
     })
   }
 
-  getStories = async () => {
-    const stories = await axios.get(
-      `https://hacker-news.firebaseio.com/v0/item/9127232.json?print=pretty`
+  getTopStories = async () => {
+    const { topStoriesIds } = this.state
+
+    const storiesData = await topStoriesIds.map(async element => {
+      const story = await axios.get(
+        `https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`
+      )
+      // console.log(story)
+      this.setState(prevState => {
+        return (this.state.topStoriesData = [
+          ...prevState.topStoriesData,
+          story.data
+        ])
+      })
+    })
+  }
+
+  renderTopStories = () => {
+    return this.state.topStoriesData.map((element, index) => {
+      let url = element.url
+      return (
+        <Text
+          key={index}
+          style={{ color: 'blue' }}
+          onPress={() => Linking.openURL(url)}
+        >
+          {element.title}
+        </Text>
+      )
+    })
+  }
+
+  renderTest = () => {
+    return (
+      <Text
+        style={{ color: 'blue' }}
+        onPress={() =>
+          Linking.openURL(
+            `https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`
+          )
+        }
+      >
+        Story
+      </Text>
     )
-    console.log(stories)
   }
 
   render() {
+    const { topStoriesIds } = this.state
+    // console.log(this.state.topStoriesData)
     const { navigate } = this.props.navigation
     return (
-      <View style={styles.container}>
-        <View style={styles.title}>
-          <Text style={styles.titleText}>Welcome</Text>
-        </View>
-        <Input>Search</Input>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.title}>
+            <Text style={styles.titleText}>Welcome</Text>
+          </View>
+          <Input>Search</Input>
 
-        <Text onPress={() => navigate('Article')}>
-          <Text>Article</Text>
-        </Text>
-      </View>
+          <Text onPress={() => navigate('Article')}>
+            <Text>Article</Text>
+          </Text>
+          <View>
+            <ScrollView>{this.renderTopStories()}</ScrollView>
+          </View>
+        </View>
+      </ScrollView>
     )
   }
 }

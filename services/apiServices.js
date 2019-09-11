@@ -12,7 +12,9 @@ const api = axios.create({
 
 export const getStories = async () => {
 	try {
-		const resp = await api.get('/')
+		const resp = await axios.get(
+            `https://hacker-news.firebaseio.com/v0/item/9127232.json?print=pretty`
+          )
 		return resp.data
 	} catch (error) {
 		throw error
