@@ -11,7 +11,7 @@ export const Header = ({ children, style }) => {
 const styles = StyleSheet.create({
 	container: {
 		width: screenWidth,
-		backgroundColor: primary,
+		backgroundColor: '#ff6600',
 		flex: 1,
 		alignSelf: 'stretch',
 		alignItems: 'center'

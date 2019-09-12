@@ -1,6 +1,17 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, Linking } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Linking,
+  FlatList,
+  Dimensions
+} from 'react-native'
 import { Button, Header, Input, ViewContainer } from '../../../common/'
+const screenWidth = Math.round(Dimensions.get('window').width)
+
+
 import axios from 'axios'
 
 export default class HomeScreen extends Component {
@@ -85,15 +96,17 @@ export default class HomeScreen extends Component {
     return (
       <ScrollView>
         <View style={styles.container}>
-          <View style={styles.title}>
-            <Text style={styles.titleText}>Welcome</Text>
-          </View>
-          <Input>Search</Input>
-
+          <Header>
+            <View style={styles.title}>
+              <Text style={styles.titleText}>Search</Text>
+            </View>
+            <Input></Input>
+          </Header>
           <Text onPress={() => navigate('Article')}>
             <Text>Article</Text>
           </Text>
-          <View>
+          <View style={{ width: screenWidth }}>
+            <FlatList />
             <ScrollView>{this.renderTopStories()}</ScrollView>
           </View>
         </View>
@@ -121,6 +134,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1
   },
+  searchBar: {
+    backgroundColor: 'white'
+  },
   title: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -132,7 +148,8 @@ const styles = StyleSheet.create({
     // margin and height have to be integers for react native to pick up
     // color: textColor,
     fontSize: 18,
-    fontWeight: '700'
+    fontWeight: '700',
+    color: '#333333'
     // fontweight take string for some reason
   },
   card: {
