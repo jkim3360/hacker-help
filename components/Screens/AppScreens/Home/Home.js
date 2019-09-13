@@ -1,116 +1,173 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
-  Linking,
+  TouchableOpacity,
   FlatList,
-  Dimensions
+  Dimensions,
+  LayoutAnimation,
+  ActivityIndicator
 } from 'react-native'
-import { Button, Header, Input, ViewContainer } from '../../../common/'
+import { Input, Header } from '../../../common/'
+import ToggleSwitch from '../../../common/ToggleSwitch'
 const screenWidth = Math.round(Dimensions.get('window').width)
-
-
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
+import apiData from '../../../../services/apiData'
 
 export default class HomeScreen extends Component {
   constructor() {
     super()
     this.state = {
       topStoriesIds: [],
-      topStoriesData: []
+      topStoriesData: [],
+      filterArray: [],
+      search: '',
+      searchResult: [],
+      isLoading: false,
+      bookMarked: false
     }
+  }
+
+  componentWillUpdate() {
+    LayoutAnimation.easeInEaseOut()
   }
 
   static navigationOptions = {
     title: 'Hacker Help'
   }
+
   async componentDidMount() {
     await this.getTopStoriesId()
     await this.getTopStories()
-    // console.log(this.state.topStoriesdata)
   }
 
+  // get ids for urls
   getTopStoriesId = async () => {
     const topStoriesIds = await axios.get(
       'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
     )
-    // console.log(topStoriesIds.data)
+    // console.log(topStoriesIds)
     this.setState({
       topStoriesIds: topStoriesIds.data
     })
+    this.state.topStoriesIds
   }
 
   getTopStories = async () => {
-    const { topStoriesIds } = this.state
-
-    const storiesData = await topStoriesIds.map(async element => {
-      const story = await axios.get(
-        `https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`
-      )
-      // console.log(story)
-      this.setState(prevState => {
-        return (this.state.topStoriesData = [
-          ...prevState.topStoriesData,
-          story.data
-        ])
+    apiData.apiData.forEach(async element => {
+      const story = await axios.get(element)
+      //  console.log(story.data)
+      this.setState({
+        topStoriesData: [...this.state.topStoriesData, story.data],
+        isLoading: false,
+        filterArray: []
       })
     })
+
+    // topStoriesIds.forEach(async element => {
+    //     const story = await axios.get(
+    //       `https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`
+    //     )
+    //     console.log(story)
+    //     this.setState({
+    //       topStoriesData: [...this.state.topStoriesData, story.data],
+    //       isLoading: false,
+    //       filterArray: []
+    //     })
+    //   })
+
+    // console.log(this.state.topStoriesData)
+    // const { topStoriesIds } = this.state
+    // // console.log(topStoriesIds)
+    // this.setState({ isLoading: true })
+    // console.log(apiData.apiData)
+    // topStoriesIds.map(async element=> {
+    //   console.log(`https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`)
+    // })
   }
 
-  renderTopStories = () => {
-    return this.state.topStoriesData.map((element, index) => {
-      let url = element.url
-      return (
-        <Text
-          key={index}
-          style={{ color: 'blue' }}
-          onPress={() => Linking.openURL(url)}
-        >
-          {element.title}
-        </Text>
-      )
-    })
-  }
-
-  renderTest = () => {
-    return (
-      <Text
-        style={{ color: 'blue' }}
-        onPress={() =>
-          Linking.openURL(
-            `https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`
-          )
-        }
-      >
-        Story
-      </Text>
+  handleChange = async search => {
+    this.setState({ isLoading: true })
+    const filteredValue = this.state.topStoriesData.filter(article =>
+      article.title.toLowerCase().includes(search.toLowerCase())
     )
+    this.setState({ topStoriesData: filteredValue, isLoading: false })
+    if (this.state.search.length < 2) await this.getTopStories()
+  }
+
+  toggleMeeting() {
+    this.setState({
+      bookMarked: !this.state.isMeetingStarted
+    })
   }
 
   render() {
-    const { topStoriesIds } = this.state
     // console.log(this.state.topStoriesData)
+    const { search } = this.state
     const { navigate } = this.props.navigation
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <Header>
-            <View style={styles.title}>
-              <Text style={styles.titleText}>Search</Text>
-            </View>
-            <Input></Input>
-          </Header>
-          <Text onPress={() => navigate('Article')}>
-            <Text>Article</Text>
-          </Text>
-          <View style={{ width: screenWidth }}>
-            <FlatList />
-            <ScrollView>{this.renderTopStories()}</ScrollView>
+      <Fragment>
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <View style={styles.container}>
+            <Header>
+              <View style={styles.title}>
+                <Ionicons
+                  style={{ marginTop: 40 }}
+                  name={'ios-code-working'}
+                  size={130}
+                  color={'#333333'}
+                />
+                <Text style={styles.titleText}>Hacker Help</Text>
+              </View>
+              <Input
+                onChangeText={search => this.handleChange(search)}
+                placeholder={'Search'}
+              ></Input>
+            </Header>
+            <Text onPress={() => navigate('Article')}></Text>
+            <View style={{ width: screenWidth }}></View>
+          </View>
+          <View style={styles.flatListView}>
+            {this.state.isLoading === true ? (
+              <ActivityIndicator size="large" />
+            ) : (
+              <FlatList
+                keyExtractor={(item, index) => String(index)}
+                style={styles.flatList}
+                data={this.state.topStoriesData}
+                renderItem={({ item }) => {
+                  return (
+                    <View style={styles.flatListItem}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('Article', {
+                            url: item.url
+                          })
+                        }
+                      >
+                        <Text style={styles.title}>{item.title}</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.details}>
+                        {item.score} Points by {item.by}
+                      </Text>
+                      <ToggleSwitch
+                        topStoriesData={this.state.topStoriesData}
+                        flatListItemTitle={item.title}
+                        flatListItemScore={item.score}
+                        flatListItemBy={item.by}
+                        flatListItemUrl={item.url}
+                        flatListItemId={item.id}
+                      />
+                    </View>
+                  )
+                }}
+              />
+            )}
           </View>
         </View>
-      </ScrollView>
+      </Fragment>
     )
   }
 }
@@ -124,30 +181,43 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
-    flexDirection: 'column'
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute'
   },
-  bottomContainer: {
-    flex: 4,
-    justifyContent: 'center'
+  flatListView: {
+    margin: 3,
+    flex: 2
+  },
+  flatList: {
+    margin: 3,
+    flex: 2
+  },
+  flatListItem: {
+    margin: 5,
+    borderBottomWidth: 5,
+    borderBottomColor: '#f6f6f6'
   },
   listStyle: {
     alignSelf: 'stretch',
     flex: 1
   },
   searchBar: {
+    marginTop: -10,
     backgroundColor: 'white'
   },
   title: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    flex: 0
+    fontSize: 18,
+    flexShrink: 1
+  },
+  details: {
+    fontSize: 11
   },
   titleText: {
-    marginTop: 50,
-    // margin and height have to be integers for react native to pick up
-    // color: textColor,
-    fontSize: 18,
+    marginTop: -25,
+    fontSize: 16,
+    alignSelf: 'center',
     fontWeight: '700',
     color: '#333333'
     // fontweight take string for some reason

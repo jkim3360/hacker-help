@@ -45,7 +45,7 @@ export const Input = ({
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'column',
-		width: 300,
+		width: 350,
 		marginBottom: 20
 	},
 	input: {

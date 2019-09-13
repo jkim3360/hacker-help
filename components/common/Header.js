@@ -10,10 +10,11 @@ export const Header = ({ children, style }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: screenWidth,
+		// width: screenWidth,
 		backgroundColor: '#ff6600',
 		flex: 1,
 		alignSelf: 'stretch',
-		alignItems: 'center'
+		alignItems: 'center',
+		height: 200
 	}
 })
