@@ -10,12 +10,14 @@ import {
   AsyncStorage
 } from 'react-native'
 import BookMarks from '../Screens/AppScreens/BookMarks/BookMarks'
-
+import { apiCall } from '../../services/apiServices'
+import axios from 'axios'
 
 export default class ToggleSwitch extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      topStoriesIds: [],
       flatListItemTitle: this.props.flatListItemTitle,
       flatListItemScore: this.props.flatListItemScore,
       flatListItemBy: this.props.flatListItemBy,
@@ -24,68 +26,37 @@ export default class ToggleSwitch extends Component {
     }
   }
 
-  storeData = async () => {
-    try {
-      const set = await AsyncStorage.multiSet([
-        [`flatListItemScore_${this.state.flatListItemId}`, this.state.flatListItemScore.toString()],
-        [`flatListItemTitle_${this.state.flatListItemId}`, this.state.flatListItemTitle],
-        [`flatListItemBy_${this.state.flatListItemId}`, this.state.flatListItemBy],
-        [`flatListItemUrl_${this.state.flatListItemId}`, this.state.flatListItemUrl],
-        [`flatListItemId_${this.state.flatListItemId}`, this.state.flatListItemId.toString()]
-      ])
-    } catch (error) {
-      throw error
-    }
+  async componentDidMount() {
+    const topStoriesIds = await apiCall.get(
+      'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
+    )
+    this.setState({
+      topStoriesIds: topStoriesIds.data
+    })
   }
 
-  retrieveData = async () => {
-    try {
-      const get = await AsyncStorage.multiGet([
-        `flatListItemTitle_${this.state.flatListItemId}`,
-        `flatListItemScore_${this.state.flatListItemId}`,
-        `flatListItemBy_${this.state.flatListItemId}`,
-        `flatListItemUrl_${this.state.flatListItemId}`,
-        `flatListItemId_${this.state.flatListItemId}`
-      ])
-      console.log(get)
-    } catch (error) {
-      throw error
-    }
+  addBookMark = async () => {
+    const { flatListItemId } = this.state
+    await apiCall.post('/bookmarks/1/add', { api_id: flatListItemId })
   }
 
-  removeData = async () => {
-    try {
-      const remove = await AsyncStorage.multiRemove([
-        `flatListItemTitle_${this.state.flatListItemId}`,
-        `flatListItemScore_${this.state.flatListItemId}`,
-        `flatListItemBy_${this.state.flatListItemId}`,
-        `flatListItemUrl_${this.state.flatListItemId}`,
-        `flatListItemId_${this.state.flatListItemId}`
-      ])
-    } catch (error) {
-      throw error
-    }
+  removeBookMark = async () => {
+    const { flatListItemId } = this.state
+    await apiCall.delete(`/bookmarks/1/remove/${flatListItemId}`)
   }
 
-  handleToggle = value => {
+  handleToggle = async value => {
+    const { flatListItemId } = this.state
     this.setState({
       SwitchOnValueHolder: value
     })
     if (value == true) {
-      this.storeData()
-      this.props.navigation.navigate('BookMarks', {
-        url: item.url
-      })
-      // console.log('Data stored')
-      this.retrieveData()
+      this.addBookMark()
     } else {
-      this.removeData()
-      // console.log('Data deleted')
-      this.retrieveData()
+      this.removeBookMark()
     }
   }
   render() {
-   console.log(this.props.navigation)
     return (
       <View style={styles.MainContainer}>
         <Text style={{ fontSize: 18 }}> Bookmark </Text>
@@ -94,7 +65,6 @@ export default class ToggleSwitch extends Component {
           style={{ marginBottom: 10 }}
           value={this.state.SwitchOnValueHolder}
         />
-        {/* <BookMarks /> */}
       </View>
     )
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, WebView, StyleSheet } from 'react-native'
 const Browser = ({ navigation }) => {
-  console.log(navigation)
+  // console.log(navigation)
   return (
     <View style={styles.container}>
       <WebView

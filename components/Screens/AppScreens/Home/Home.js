@@ -15,6 +15,7 @@ const screenWidth = Math.round(Dimensions.get('window').width)
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
 import apiData from '../../../../services/apiData'
+import apiCall from '../../../../services/apiServices'
 
 export default class HomeScreen extends Component {
   constructor() {
@@ -30,7 +31,6 @@ export default class HomeScreen extends Component {
       loadingMore: false,
       page: 1,
       error: null
-      
     }
   }
 
@@ -42,21 +42,21 @@ export default class HomeScreen extends Component {
     title: 'Hacker Help'
   }
 
-handleLoadMore = () => {
-  this.setState(
-    (prevState, nextProps) => ({
-      page: prevState.page+1,
-      loadingMore: true
-    }),
-    () => {
-      this.getTopStories()
-    }
-  )
-}
+  handleLoadMore = () => {
+    this.setState(
+      (prevState, nextProps) => ({
+        page: prevState.page + 1,
+        loadingMore: true
+      }),
+      () => {
+        this.getTopStories()
+      }
+    )
+  }
 
   async componentDidMount() {
     await this.getTopStoriesId()
-    await this.getTopStories()
+    await this.getTopStories()    
   }
 
   // get ids for urls
@@ -113,14 +113,7 @@ handleLoadMore = () => {
     if (this.state.search.length < 2) await this.getTopStories()
   }
 
-  toggleMeeting() {
-    this.setState({
-      bookMarked: !this.state.isMeetingStarted
-    })
-  }
-
   render() {
-    // console.log(this.state.topStoriesData)
     const { search } = this.state
     const { navigate } = this.props.navigation
     return (
@@ -159,26 +152,32 @@ handleLoadMore = () => {
                 renderItem={({ item }) => {
                   return (
                     <View style={styles.flatListItem}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.props.navigation.navigate('Article', {
-                            url: item.url
-                          })
-                        }
-                      >
-                        <Text style={styles.title}>{item.title}</Text>
-                      </TouchableOpacity>
-                      <Text style={styles.details}>
-                        {item.score} Points by {item.by}
-                      </Text>
-                      <ToggleSwitch
-                        topStoriesData={this.state.topStoriesData}
-                        flatListItemTitle={item.title}
-                        flatListItemScore={item.score}
-                        flatListItemBy={item.by}
-                        flatListItemUrl={item.url}
-                        flatListItemId={item.id}
-                      />
+                      <View style={styles.flatListItemTop}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.props.navigation.navigate('Article', {
+                              url: item.url
+                            })
+                          }
+                        >
+                          <Text style={styles.title}>{item.title}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.details}>
+                          {item.score} points by {item.by}
+                        </Text>
+                      </View>
+
+                      <View>
+                        <ToggleSwitch
+                          topStoriesData={this.state.topStoriesData}
+                          flatListItemTitle={item.title}
+                          flatListItemScore={item.score}
+                          flatListItemBy={item.by}
+                          flatListItemUrl={item.url}
+                          flatListItemId={item.id}
+                        />
+                      </View>
+                      {/* <TouchableOpacity onPress={() => this.addBookMark()}><Text>asdf</Text></TouchableOpacity> */}
                     </View>
                   )
                 }}
@@ -210,16 +209,15 @@ const styles = StyleSheet.create({
     flex: 2
   },
   flatList: {
-    margin: 3,
     flex: 2
   },
   flatListItem: {
+    flexDirection: 'row',
     margin: 5,
     borderBottomWidth: 5,
     borderBottomColor: '#f6f6f6'
   },
-  listStyle: {
-    alignSelf: 'stretch',
+  flatListItemTop: {
     flex: 1
   },
   searchBar: {
