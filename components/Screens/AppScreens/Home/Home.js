@@ -22,11 +22,15 @@ export default class HomeScreen extends Component {
     this.state = {
       topStoriesIds: [],
       topStoriesData: [],
-      filterArray: [],
       search: '',
       searchResult: [],
+      bookMarked: false,
       isLoading: false,
-      bookMarked: false
+      pageLoading: true,
+      loadingMore: false,
+      page: 1,
+      error: null
+      
     }
   }
 
@@ -37,6 +41,18 @@ export default class HomeScreen extends Component {
   static navigationOptions = {
     title: 'Hacker Help'
   }
+
+handleLoadMore = () => {
+  this.setState(
+    (prevState, nextProps) => ({
+      page: prevState.page+1,
+      loadingMore: true
+    }),
+    () => {
+      this.getTopStories()
+    }
+  )
+}
 
   async componentDidMount() {
     await this.getTopStoriesId()
@@ -137,6 +153,9 @@ export default class HomeScreen extends Component {
                 keyExtractor={(item, index) => String(index)}
                 style={styles.flatList}
                 data={this.state.topStoriesData}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0.5}
+                initialNumToRender={10}
                 renderItem={({ item }) => {
                   return (
                     <View style={styles.flatListItem}>

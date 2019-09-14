@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import BookMarks from '../Screens/AppScreens/BookMarks/BookMarks'
 
+
 export default class ToggleSwitch extends Component {
   constructor(props) {
     super(props)
@@ -21,20 +22,16 @@ export default class ToggleSwitch extends Component {
       flatListItemUrl: this.props.flatListItemUrl,
       flatListItemId: this.props.flatListItemId
     }
-
   }
 
   storeData = async () => {
     try {
       const set = await AsyncStorage.multiSet([
-        [`flatListItemTitle_${this.state.flatListItemId}`, this.state.flatListItemTitle],
         [`flatListItemScore_${this.state.flatListItemId}`, this.state.flatListItemScore.toString()],
+        [`flatListItemTitle_${this.state.flatListItemId}`, this.state.flatListItemTitle],
         [`flatListItemBy_${this.state.flatListItemId}`, this.state.flatListItemBy],
         [`flatListItemUrl_${this.state.flatListItemId}`, this.state.flatListItemUrl],
-        [`flatListItemId_${this.state.flatListItemId}`, this.state.flatListItemId.toString()],
-        // [`flatListItemId`, this.state.flatListItemId],
-        // ['flatListItemScore', this.state.flatListItemScore],
-        // ['flatListItemBy', this.state.flatListItemBy]
+        [`flatListItemId_${this.state.flatListItemId}`, this.state.flatListItemId.toString()]
       ])
     } catch (error) {
       throw error
@@ -76,6 +73,9 @@ export default class ToggleSwitch extends Component {
     })
     if (value == true) {
       this.storeData()
+      this.props.navigation.navigate('BookMarks', {
+        url: item.url
+      })
       // console.log('Data stored')
       this.retrieveData()
     } else {
@@ -85,6 +85,7 @@ export default class ToggleSwitch extends Component {
     }
   }
   render() {
+   console.log(this.props.navigation)
     return (
       <View style={styles.MainContainer}>
         <Text style={{ fontSize: 18 }}> Bookmark </Text>

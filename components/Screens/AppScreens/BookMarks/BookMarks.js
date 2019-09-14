@@ -42,6 +42,9 @@ export default class BookMarks extends Component {
     const { navigate } = this.props.navigation
     return (
       <View style={styles.container}>
+        <Header style={{flex: 1}}>
+          <Text style={styles.title}>Bookmarks</Text>
+        </Header>
         <View style={styles.title}>
           <Text style={styles.titleText}>Bookmarks Page</Text>
           <Text style={{ color: 'black' }} onPress={() => navigate('Home')}>
@@ -49,6 +52,7 @@ export default class BookMarks extends Component {
           </Text>    
           
         </View>
+ 
  
         {/* <FlatList
           keyExtractor={(item, index) => String(index)}
@@ -78,6 +82,13 @@ export default class BookMarks extends Component {
             )
           }}
         /> */}
+
+<FlatList
+        renderItem={({ item }) => <View>Face</View>}
+        keyExtractor={item => item.id}
+      />
+
+        
       </View>
     )
   }
@@ -98,8 +109,11 @@ const styles = StyleSheet.create({
   title: {
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'stretch',
-    flex: 1
+    alignSelf: 'center',
+    marginTop: 60,
+    flex: 5,
+    fontSize: 30,
+    color: 'black'
   },
   details: {
     fontSize: 11
