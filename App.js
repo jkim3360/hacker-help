@@ -3,8 +3,9 @@ import React, { Component } from 'react'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import ArticleScreen from './components/Screens/AppScreens/Article/Article'
+import SplashScreen from './components/Screens/AppScreens/SplashScreen/SplashScreen'
 import HomeScreen from './components/Screens/AppScreens/Home/Home'
 import BookMarksScreen from './components/Screens/AppScreens/BookMarks/BookMarks'
 // import MyWebComponent from './components/Webview'
@@ -16,8 +17,11 @@ const TabNavigator = createBottomTabNavigator(
   {
     Home: HomeScreen,
     Article: Browser,
-    BookMarks: BookMarksScreen,
-  },
+    BookMarks: {
+      screen: BookMarksScreen,
+      
+  }
+}, 
   {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
@@ -50,14 +54,13 @@ const TabNavigator = createBottomTabNavigator(
   }
 )
 
-// const HackerHelpApp = createStackNavigator({
-//   Home: HomeScreen,
-//   Article: ArticleScreen
-// })
 
-// export default App = createAppContainer(HackerHelpApp)
-
-export default createAppContainer(TabNavigator)
+export default createAppContainer(
+  createSwitchNavigator({
+    App: TabNavigator,
+    Splash: SplashScreen
+  })
+)
 
 const styles = StyleSheet.create({
   icon: {

@@ -6,16 +6,14 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
-  LayoutAnimation,
   ActivityIndicator
 } from 'react-native'
-import { Input, Header } from '../../../common/'
+import { Input, Header, Logo } from '../../../common/'
 import ToggleSwitch from '../../../common/ToggleSwitch'
 const screenWidth = Math.round(Dimensions.get('window').width)
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
 import apiData from '../../../../services/apiData'
-import apiCall from '../../../../services/apiServices'
 
 export default class HomeScreen extends Component {
   constructor() {
@@ -24,84 +22,34 @@ export default class HomeScreen extends Component {
       topStoriesIds: [],
       topStoriesData: [],
       search: '',
-      searchResult: [],
-      bookMarked: false,
-      isLoading: false,
-      pageLoading: true,
-      loadingMore: false,
-      page: 1,
-      error: null
+      isLoading: true
     }
   }
 
   componentWillUpdate() {
-    LayoutAnimation.easeInEaseOut()
+    // LayoutAnimation.linear()
   }
 
   static navigationOptions = {
-    title: 'Hacker Help'
-  }
-
-  handleLoadMore = () => {
-    this.setState(
-      (prevState, nextProps) => ({
-        page: prevState.page + 1,
-        loadingMore: true
-      }),
-      () => {
-        this.getTopStories()
-      }
-    )
+    title: 'Hackmeister'
   }
 
   async componentDidMount() {
-    await this.getTopStoriesId()
-    await this.getTopStories()    
-  }
+    // await this.props.navigation.navigate('Splash')
 
-  // get ids for urls
-  getTopStoriesId = async () => {
-    const topStoriesIds = await axios.get(
-      'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
-    )
-    // console.log(topStoriesIds)
-    this.setState({
-      topStoriesIds: topStoriesIds.data
-    })
-    this.state.topStoriesIds
+    await this.getTopStories()
   }
 
   getTopStories = async () => {
     apiData.apiData.forEach(async element => {
       const story = await axios.get(element)
-      //  console.log(story.data)
       this.setState({
         topStoriesData: [...this.state.topStoriesData, story.data],
-        isLoading: false,
-        filterArray: []
+        isLoading: false
       })
+
+      // await this.props.navigation.navigate('App')
     })
-
-    // topStoriesIds.forEach(async element => {
-    //     const story = await axios.get(
-    //       `https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`
-    //     )
-    //     console.log(story)
-    //     this.setState({
-    //       topStoriesData: [...this.state.topStoriesData, story.data],
-    //       isLoading: false,
-    //       filterArray: []
-    //     })
-    //   })
-
-    // console.log(this.state.topStoriesData)
-    // const { topStoriesIds } = this.state
-    // // console.log(topStoriesIds)
-    // this.setState({ isLoading: true })
-    // console.log(apiData.apiData)
-    // topStoriesIds.map(async element=> {
-    //   console.log(`https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`)
-    // })
   }
 
   handleChange = async search => {
@@ -116,31 +64,29 @@ export default class HomeScreen extends Component {
   render() {
     const { search } = this.state
     const { navigate } = this.props.navigation
+    console.log(this.props.navigation)
     return (
       <Fragment>
         <View style={{ flex: 1, flexDirection: 'column' }}>
           <View style={styles.container}>
+            {/* header */}
             <Header>
               <View style={styles.title}>
-                <Ionicons
-                  style={{ marginTop: 40 }}
-                  name={'ios-code-working'}
-                  size={130}
-                  color={'#333333'}
-                />
-                <Text style={styles.titleText}>Hacker Help</Text>
+                <Logo style={styles.logo} />
+                <Text style={styles.titleText}>Hackmeister</Text>
               </View>
               <Input
                 onChangeText={search => this.handleChange(search)}
                 placeholder={'Search'}
               ></Input>
             </Header>
+            {/* article */}
             <Text onPress={() => navigate('Article')}></Text>
             <View style={{ width: screenWidth }}></View>
           </View>
           <View style={styles.flatListView}>
             {this.state.isLoading === true ? (
-              <ActivityIndicator size="large" />
+              <ActivityIndicator style={{ marginTop: 100 }} size="large" />
             ) : (
               <FlatList
                 keyExtractor={(item, index) => String(index)}
@@ -152,6 +98,12 @@ export default class HomeScreen extends Component {
                 renderItem={({ item }) => {
                   return (
                     <View style={styles.flatListItem}>
+                      <Ionicons
+                        style={{ marginTop: 0 }}
+                        name={'md-paper'}
+                        size={30}
+                        color={'#333333'}
+                      />
                       <View style={styles.flatListItemTop}>
                         <TouchableOpacity
                           onPress={() =>
@@ -166,7 +118,6 @@ export default class HomeScreen extends Component {
                           {item.score} points by {item.by}
                         </Text>
                       </View>
-
                       <View>
                         <ToggleSwitch
                           topStoriesData={this.state.topStoriesData}
@@ -177,7 +128,6 @@ export default class HomeScreen extends Component {
                           flatListItemId={item.id}
                         />
                       </View>
-                      {/* <TouchableOpacity onPress={() => this.addBookMark()}><Text>asdf</Text></TouchableOpacity> */}
                     </View>
                   )
                 }}
@@ -192,17 +142,13 @@ export default class HomeScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.8,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   },
-  topContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute'
+  logo: {
+    marginTop: 15
   },
   flatListView: {
     margin: 3,
@@ -218,7 +164,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f6f6f6'
   },
   flatListItemTop: {
-    flex: 1
+    flex: 1,
+    marginLeft: 10
   },
   searchBar: {
     marginTop: -10,
@@ -226,13 +173,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    flexShrink: 1
+    flexShrink: 1,
+    lineHeight: 25
   },
   details: {
-    fontSize: 11
+    fontSize: 11,
+    marginTop: 5,
+    marginBottom: 10
   },
   titleText: {
-    marginTop: -25,
+    marginTop: -15,
     fontSize: 16,
     alignSelf: 'center',
     fontWeight: '700',

@@ -18,35 +18,25 @@ export default class ToggleSwitch extends Component {
     super(props)
     this.state = {
       topStoriesIds: [],
-      flatListItemTitle: this.props.flatListItemTitle,
-      flatListItemScore: this.props.flatListItemScore,
-      flatListItemBy: this.props.flatListItemBy,
-      flatListItemUrl: this.props.flatListItemUrl,
-      flatListItemId: this.props.flatListItemId
+      api_id: this.props.flatListItemId,
+      title: this.props.flatListItemTitle,
+      url: this.props.flatListItemUrl,
+      score: this.props.flatListItemScore,
+      by: this.props.flatListItemBy
     }
   }
 
-  async componentDidMount() {
-    const topStoriesIds = await apiCall.get(
-      'https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty'
-    )
-    this.setState({
-      topStoriesIds: topStoriesIds.data
-    })
-  }
-
   addBookMark = async () => {
-    const { flatListItemId } = this.state
-    await apiCall.post('/bookmarks/1/add', { api_id: flatListItemId })
+    const { api_id, title, score, by, url } = await this.state
+    await apiCall.post('/bookmarks/1/add', { api_id, title, score, by, url })
   }
 
   removeBookMark = async () => {
-    const { flatListItemId } = this.state
-    await apiCall.delete(`/bookmarks/1/remove/${flatListItemId}`)
+    const { api_id } = this.state
+    await apiCall.delete(`/bookmarks/1/remove/${api_id}`)
   }
 
   handleToggle = async value => {
-    const { flatListItemId } = this.state
     this.setState({
       SwitchOnValueHolder: value
     })
@@ -56,10 +46,11 @@ export default class ToggleSwitch extends Component {
       this.removeBookMark()
     }
   }
+
   render() {
     return (
-      <View style={styles.MainContainer}>
-        <Text style={{ fontSize: 18 }}> Bookmark </Text>
+      <View style={styles.mainContainer}>
+        <Text style={styles.text}> Save </Text>
         <Switch
           onValueChange={value => this.handleToggle(value)}
           style={{ marginBottom: 10 }}
@@ -71,10 +62,15 @@ export default class ToggleSwitch extends Component {
 }
 
 const styles = StyleSheet.create({
-  MainContainer: {
+  mainContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    margin: 10
+    margin: 3
+  },
+  text: {
+    fontSize: 17,
+    marginBottom: 9
   }
 })
