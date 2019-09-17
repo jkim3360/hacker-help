@@ -101,19 +101,29 @@ export default class HomeScreen extends Component {
 
   async componentDidMount() {
     // await this.getJobsData()
-    await this.getTopStories()
+    // await this.getTopStories()
     await this.fetchArticles()
   }
 
   getTopStories = async () => {
     apiData.apiData.forEach(async element => {
       const story = await axios.get(element)
+      // console.log(story.data)
       this.setState({
         topStoriesData: [...this.state.topStoriesData, story.data],
         isLoading: false
       })
     })
   }
+
+  // handleChange = async search => {
+  //   this.setState({ isLoading: true })
+  //   const filteredValue = this.state.topStoriesData.filter(article =>
+  //     article.title.toLowerCase().includes(search.toLowerCase())
+  //   )
+  //   this.setState({ topStoriesData: filteredValue, isLoading: false })
+  //   if (this.state.search.length < 2) await this.getTopStories()
+  // }
 
   // get array of ids to api calls
   // getJobsData = async () => {
@@ -136,16 +146,15 @@ export default class HomeScreen extends Component {
     // const { search } = this.state
     console.log('hello')
     const searchResults = await axios
-      .get
-      // `https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=${search}&site=stackoverflow`
-      ()
-    console.log(searchResults.data)
+      .get(
+      `https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=${search}&site=stackoverflow`)
+    console.log(searchResults.data.items)
     // title view_count owner.user_id link question_id
     this.setState({
-      searchResults: searchResults.data.items
+      searchResults: searchResults.data.items,
+      isLoading: false
     })
-    console.log(searchResults)
-
+    // console.log(searchResults)
     // searchResults.data.items.forEach(element => {
     // })
   }
@@ -160,8 +169,8 @@ export default class HomeScreen extends Component {
   }
 
   render() {
-    const { search } = this.state
-    const { navigate } = this.props.navigation
+    // const { search } = this.state
+    // const { navigate } = this.props.navigation
     return (
       <Fragment>
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -208,12 +217,12 @@ export default class HomeScreen extends Component {
                           <Text style={styles.title}>{item.title}</Text>
                         </TouchableOpacity>
                         <Text style={styles.details}>
-                          {item.view_count} points by {item.answer_count}
+                          {item.view_count} views | {item.answer_count} replies
                         </Text>
-                      </View>
+                      </View>  
                       <View>
                         <ToggleSwitch
-                          topStoriesData={this.state.searchResults}
+                          topStoriesData={this.state.topStoriesData}
                           flatListItemTitle={item.title}
                           flatListItemScore={item.view_count}
                           flatListItemBy={item.title}

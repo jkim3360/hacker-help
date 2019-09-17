@@ -12,7 +12,7 @@ const Browser = ({ navigation }) => {
         source={{
           uri: navigation.state.params.url
             ? navigation.state.params.url
-            : 'https://www.engadget.com/'
+            : 'https://www.stackoverflow.com/'
         }}
       />
     </View>

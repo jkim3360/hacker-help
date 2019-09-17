@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = `http://172.16.7.82:3000/`
+const BASE_URL = `https://hackmeister-backend.herokuapp.com/`
 import { getUser } from './Credentials'
 const JwtToken = 'token'
 // process.env.API_URL ||
