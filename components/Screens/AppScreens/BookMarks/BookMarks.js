@@ -6,15 +6,12 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
-  Button,
   Dimensions
 } from 'react-native'
 import { NavigationEvents } from 'react-navigation'
 import { Header } from '../../../common'
 import { apiCall } from '../../../../services/apiServices'
-import { AppLoading, Font } from 'expo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import SwipeView from 'react-native-swipeview'
 const screenWidth = Math.round(Dimensions.get('window').width)
 
 export default class BookMarks extends Component {
@@ -34,17 +31,12 @@ export default class BookMarks extends Component {
   }
 
   componentDidMount() {
-    // const bookMarksData = await apiCall.get('/bookmarks')
-    // this.setState({
-    //   bookMarksData: bookMarksData.data,
-    //   isLoading: false,
-    //   refreshing: false
-    // })
     this.makeRequest()
   }
 
   makeRequest = async () => {
     const bookMarksData = await apiCall.get('/bookmarks')
+    console.log(bookmarksData.data)
     this.setState({
       bookMarksData: bookMarksData.data,
       isLoading: false,
@@ -103,21 +95,15 @@ export default class BookMarks extends Component {
                       <TouchableOpacity
                         onPress={() =>
                           this.props.navigation.navigate('Article', {
-                            url: item.url
+                            url: item.link
                           })
                         }
                       >
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.details}>
-                      {item.score} points by {item.by}
-                    </Text>
+                        {item.score} views 
+                        </Text>
                       </TouchableOpacity>
-                      {/* <Button
-                        title="Remove"
-                        onPress={() => {
-                          this.removeBookMark(item.api_id)
-                        }}
-                      /> */}
                     </View>
               
                   </View>
