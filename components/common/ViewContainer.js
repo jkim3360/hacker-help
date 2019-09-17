@@ -5,7 +5,7 @@ export const ViewContainer = () => {
   return (
     <View
       style={{
-        flexDirection: 'row',
+        flexDirection: 'column',
         height: 100,
         padding: 20,
       }}

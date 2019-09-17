@@ -2,5 +2,6 @@
 export * from './Button'
 export * from './Input'
 export * from './Header'
-// export * from './Card'
+export * from './Gradient'
 export * from './ViewContainer'
+export * from './Logo'

@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Dimensions } from 'react-native'
 import { primary } from '../styles/Colors'
-const screenWidth = Math.round(Dimensions.get('window').width)
 
 
 export const Header = ({ children, style }) => {
@@ -10,10 +9,9 @@ export const Header = ({ children, style }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: screenWidth,
-		backgroundColor: primary,
+		backgroundColor: '#40E0D0',
 		flex: 1,
 		alignSelf: 'stretch',
-		alignItems: 'center'
+		alignItems: 'center',
 	}
 })
