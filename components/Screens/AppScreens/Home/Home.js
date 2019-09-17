@@ -129,7 +129,6 @@ export default class HomeScreen extends Component {
     articles.map(element => {
       console.log(`https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`)
     })
-
   }
 
   // fetchArticles = async () => {
