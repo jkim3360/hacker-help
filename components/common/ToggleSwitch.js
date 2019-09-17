@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 17,
-    marginBottom: 9
+    marginBottom: 9,
+    fontFamily: 'Avenir'
   }
 })

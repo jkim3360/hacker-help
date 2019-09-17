@@ -10,18 +10,18 @@ import HomeScreen from './components/Screens/AppScreens/Home/Home'
 import BookMarksScreen from './components/Screens/AppScreens/BookMarks/BookMarks'
 // import MyWebComponent from './components/Webview'
 import Browser from './components/Screens/AppScreens/Webivew/Webview'
-
-
+// import {
+//   AuthNavigator
+// } from './Navigators/AuthNavigator'
 
 const TabNavigator = createBottomTabNavigator(
   {
     Home: HomeScreen,
     Article: Browser,
     BookMarks: {
-      screen: BookMarksScreen,
-      
-  }
-}, 
+      screen: BookMarksScreen
+    }
+  },
   {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
@@ -48,17 +48,16 @@ const TabNavigator = createBottomTabNavigator(
       }
     }),
     tabBarOptions: {
-      activeTintColor: 'tomato',
+      activeTintColor: '#40E0D0',
       inactiveTintColor: 'gray'
     }
   }
 )
 
-
 export default createAppContainer(
   createSwitchNavigator({
+    SplashScreen: SplashScreen,
     App: TabNavigator,
-    Splash: SplashScreen
   })
 )
 

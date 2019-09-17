@@ -22,7 +22,8 @@ export default class HomeScreen extends Component {
       topStoriesIds: [],
       topStoriesData: [],
       search: '',
-      isLoading: true
+      isLoading: true,
+      searchResults: []
     }
   }
 
@@ -38,6 +39,7 @@ export default class HomeScreen extends Component {
     // await this.props.navigation.navigate('Splash')
 
     await this.getTopStories()
+    await this.fetchArticles()
   }
 
   getTopStories = async () => {
@@ -46,11 +48,26 @@ export default class HomeScreen extends Component {
       this.setState({
         topStoriesData: [...this.state.topStoriesData, story.data],
         isLoading: false
-      })
-
-      // await this.props.navigation.navigate('App')
+      }) // await this.props.navigation.navigate('App')
     })
   }
+
+  // fetchArticles = async () => {
+  //   const { search } = this.state
+  //   console.log('hello')
+  //   const searchResults = await axios.get(
+  //     `https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=javascript&site=stackoverflow`
+  //   )
+  //   console.log(searchResults.data)
+  //   // title view_count owner.user_id link question_id
+  //   this.setState({
+  //     searchResults: searchResults.data.items
+  //   })
+  //   console.log(searchResults)
+
+  //   // searchResults.data.items.forEach(element => {
+  //   // })
+  // }
 
   handleChange = async search => {
     this.setState({ isLoading: true })
@@ -64,7 +81,6 @@ export default class HomeScreen extends Component {
   render() {
     const { search } = this.state
     const { navigate } = this.props.navigation
-    console.log(this.props.navigation)
     return (
       <Fragment>
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -72,19 +88,18 @@ export default class HomeScreen extends Component {
             {/* header */}
             <Header>
               <View style={styles.title}>
-                <Logo style={styles.logo} />
+                <Logo style={styles.logo} size={80} />
                 <Text style={styles.titleText}>Hackmeister</Text>
               </View>
+            </Header>
+          </View>
+          <View style={styles.flatListView}>
+            <View style={styles.inputContainer}>
               <Input
                 onChangeText={search => this.handleChange(search)}
                 placeholder={'Search'}
-              ></Input>
-            </Header>
-            {/* article */}
-            <Text onPress={() => navigate('Article')}></Text>
-            <View style={{ width: screenWidth }}></View>
-          </View>
-          <View style={styles.flatListView}>
+              />
+            </View>
             {this.state.isLoading === true ? (
               <ActivityIndicator style={{ marginTop: 100 }} size="large" />
             ) : (
@@ -92,14 +107,12 @@ export default class HomeScreen extends Component {
                 keyExtractor={(item, index) => String(index)}
                 style={styles.flatList}
                 data={this.state.topStoriesData}
-                onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0.5}
                 initialNumToRender={10}
                 renderItem={({ item }) => {
                   return (
                     <View style={styles.flatListItem}>
                       <Ionicons
-                        style={{ marginTop: 0 }}
+                        style={{ marginTop: 5, marginLeft: 9 }}
                         name={'md-paper'}
                         size={30}
                         color={'#333333'}
@@ -142,17 +155,24 @@ export default class HomeScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.8,
+    flex: 0.659,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   },
   logo: {
-    marginTop: 15
+    marginTop: 22
   },
   flatListView: {
-    margin: 3,
-    flex: 2
+    width: screenWidth,
+    margin: 0,
+    flex: 4
+  },
+  inputContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 0.1,
+    backgroundColor: '#E8F3F1'
   },
   flatList: {
     flex: 2
@@ -174,20 +194,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     flexShrink: 1,
-    lineHeight: 25
+    lineHeight: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: 'Avenir'
   },
   details: {
     fontSize: 11,
     marginTop: 5,
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: 'Avenir'
   },
   titleText: {
-    marginTop: -15,
+    marginTop: -20,
     fontSize: 16,
     alignSelf: 'center',
     fontWeight: '700',
-    color: '#333333'
-    // fontweight take string for some reason
+    color: '#E8F3F1',
+    fontFamily: 'Avenir'
   },
   card: {
     justifyContent: 'space-between',
@@ -206,7 +230,6 @@ const styles = StyleSheet.create({
   },
   text: {
     alignSelf: 'center',
-    // color: textColor,
     fontSize: 18
   }
 })
