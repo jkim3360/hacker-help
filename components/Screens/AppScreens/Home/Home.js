@@ -100,7 +100,7 @@ export default class HomeScreen extends Component {
   }
 
   async componentDidMount() {
-    await this.getJobsData()
+    // await this.getJobsData()
     await this.getTopStories()
     await this.fetchArticles()
   }
@@ -111,13 +111,13 @@ export default class HomeScreen extends Component {
       this.setState({
         topStoriesData: [...this.state.topStoriesData, story.data],
         isLoading: false
-      }) 
+      })
     })
   }
 
   // get array of ids to api calls
   // getJobsData = async () => {
-  //   const jobs = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty") 
+  //   const jobs = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty")
   //   console.log(jobs)
   //     this.setState({
   //       jobStories: [... this.state.jobStories, jobs.data]
@@ -125,40 +125,39 @@ export default class HomeScreen extends Component {
   // }
 
   // map array of ids for list of api urls
-  getJobsData = async () => {
-    articles.map(element => {
-      console.log(`https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`)
-    })
-
-  }
-
-  // fetchArticles = async () => {
-  //   const { search } = this.state
-  //   console.log('hello')
-  //   const searchResults = await axios.get(
-  //     `https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=javascript&site=stackoverflow`
-  //   )
-  //   console.log(searchResults.data)
-  //   // title view_count owner.user_id link question_id
-  //   this.setState({
-  //     searchResults: searchResults.data.items
+  // getJobsData = async () => {
+  //   articles.map(element => {
+  //     console.log(`https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`)
   //   })
-  //   console.log(searchResults)
 
-  //   // searchResults.data.items.forEach(element => {
-  //   // })
   // }
+
+  fetchArticles = async search => {
+    // const { search } = this.state
+    console.log('hello')
+    const searchResults = await axios
+      .get
+      // `https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=${search}&site=stackoverflow`
+      ()
+    console.log(searchResults.data)
+    // title view_count owner.user_id link question_id
+    this.setState({
+      searchResults: searchResults.data.items
+    })
+    console.log(searchResults)
+
+    // searchResults.data.items.forEach(element => {
+    // })
+  }
 
   handleChange = async search => {
     this.setState({ isLoading: true })
-    const filteredValue = this.state.topStoriesData.filter(article =>
+    const filteredValue = this.state.searchResults.filter(article =>
       article.title.toLowerCase().includes(search.toLowerCase())
     )
-    this.setState({ topStoriesData: filteredValue, isLoading: false })
-    if (this.state.search.length < 2) await this.getTopStories()
+    this.setState({ searchResults: filteredValue, isLoading: false })
+    if (this.state.search.length < 2) await this.fetchArticles()
   }
-
-
 
   render() {
     const { search } = this.state
@@ -167,7 +166,6 @@ export default class HomeScreen extends Component {
       <Fragment>
         <View style={{ flex: 1, flexDirection: 'column' }}>
           <View style={styles.container}>
-            {/* header */}
             <Header>
               <View style={styles.title}>
                 <Logo style={styles.logo} size={80} />
@@ -188,7 +186,7 @@ export default class HomeScreen extends Component {
               <FlatList
                 keyExtractor={(item, index) => String(index)}
                 style={styles.flatList}
-                data={this.state.topStoriesData}
+                data={this.state.searchResults}
                 initialNumToRender={10}
                 renderItem={({ item }) => {
                   return (
@@ -203,24 +201,24 @@ export default class HomeScreen extends Component {
                         <TouchableOpacity
                           onPress={() =>
                             this.props.navigation.navigate('Article', {
-                              url: item.url
+                              url: item.link
                             })
                           }
                         >
                           <Text style={styles.title}>{item.title}</Text>
                         </TouchableOpacity>
                         <Text style={styles.details}>
-                          {item.score} points by {item.by}
+                          {item.view_count} points by {item.answer_count}
                         </Text>
                       </View>
                       <View>
                         <ToggleSwitch
-                          topStoriesData={this.state.topStoriesData}
+                          topStoriesData={this.state.searchResults}
                           flatListItemTitle={item.title}
-                          flatListItemScore={item.score}
-                          flatListItemBy={item.by}
-                          flatListItemUrl={item.url}
-                          flatListItemId={item.id}
+                          flatListItemScore={item.view_count}
+                          flatListItemBy={item.title}
+                          flatListItemUrl={item.link}
+                          flatListItemId={item.question_id}
                         />
                       </View>
                     </View>

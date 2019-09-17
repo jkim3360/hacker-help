@@ -7,7 +7,7 @@ export default class SplashScreen extends React.Component {
     setTimeout(() => 
     // console.log('asdf')
     this.props.navigation.navigate('App')
-    , 1000)
+    , 3000)
 
   render() {
     const viewStyles = [styles.container, { backgroundColor: '#40E0D0' }]
