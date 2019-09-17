@@ -15,6 +15,70 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
 import apiData from '../../../../services/apiData'
 
+const articles = [
+  20990140,
+  20990156,
+  20985875,
+  20990583,
+  20990350,
+  20987628,
+  20984691,
+  20965605,
+  20987292,
+  20988477,
+  20987946,
+  20987197,
+  20990552,
+  20985429,
+  20989179,
+  20986967,
+  20988584,
+  20986411,
+  20982401,
+  20983234,
+  20963700,
+  20987485,
+  20985308,
+  20984731,
+  20989709,
+  20987123,
+  20989000,
+  20984866,
+  20988908,
+  20990211,
+  20983247,
+  20975662,
+  20989696,
+  20983239,
+  20983922,
+  20989382,
+  20986730,
+  20978958,
+  20983229,
+  20987813,
+  20983930,
+  20986874,
+  20986079,
+  20975611,
+  20990251,
+  20989389,
+  20988060,
+  20965386,
+  20989894,
+  20986450,
+  20983971,
+  20982161,
+  20988512,
+  20989556,
+  20984358,
+  20966214,
+  20965827,
+  20986585,
+  20985339,
+  20975438,
+  20983780
+]
+
 export default class HomeScreen extends Component {
   constructor() {
     super()
@@ -36,8 +100,7 @@ export default class HomeScreen extends Component {
   }
 
   async componentDidMount() {
-    // await this.props.navigation.navigate('Splash')
-
+    await this.getJobsData()
     await this.getTopStories()
     await this.fetchArticles()
   }
@@ -48,8 +111,25 @@ export default class HomeScreen extends Component {
       this.setState({
         topStoriesData: [...this.state.topStoriesData, story.data],
         isLoading: false
-      }) // await this.props.navigation.navigate('App')
+      }) 
     })
+  }
+
+  // get array of ids to api calls
+  // getJobsData = async () => {
+  //   const jobs = await axios.get("https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty") 
+  //   console.log(jobs)
+  //     this.setState({
+  //       jobStories: [... this.state.jobStories, jobs.data]
+  //     })
+  // }
+
+  // map array of ids for list of api urls
+  getJobsData = async () => {
+    articles.map(element => {
+      console.log(`https://hacker-news.firebaseio.com/v0/item/${element}.json?print=pretty`)
+    })
+
   }
 
   // fetchArticles = async () => {
@@ -77,6 +157,8 @@ export default class HomeScreen extends Component {
     this.setState({ topStoriesData: filteredValue, isLoading: false })
     if (this.state.search.length < 2) await this.getTopStories()
   }
+
+
 
   render() {
     const { search } = this.state

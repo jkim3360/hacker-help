@@ -10,9 +10,9 @@ import HomeScreen from './components/Screens/AppScreens/Home/Home'
 import BookMarksScreen from './components/Screens/AppScreens/BookMarks/BookMarks'
 // import MyWebComponent from './components/Webview'
 import Browser from './components/Screens/AppScreens/Webivew/Webview'
-// import {
-//   AuthNavigator
-// } from './Navigators/AuthNavigator'
+import {
+  AuthNavigator
+} from './Navigators/AuthNavigator'
 
 const TabNavigator = createBottomTabNavigator(
   {
@@ -56,6 +56,7 @@ const TabNavigator = createBottomTabNavigator(
 
 export default createAppContainer(
   createSwitchNavigator({
+    // Auth: AuthNavigator,
     SplashScreen: SplashScreen,
     App: TabNavigator,
   })

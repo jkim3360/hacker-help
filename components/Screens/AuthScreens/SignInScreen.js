@@ -35,6 +35,7 @@ export default class SignInScreen extends Component {
 		this.setState({ errorMsg: msg, isError: true, isLoading: false })
 
 	handleVerify = () => {
+		
 		if (!this.state.username) this.handleError('Username is required')
 		if (!this.state.password) this.handleError('Password is required')
 	}

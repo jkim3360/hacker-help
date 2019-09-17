@@ -9,7 +9,6 @@ export const apiCall = axios.create({
     baseURL: BASE_URL
 })
 
-
 export const loginUser = async (user) => {
 	try {
 		const resp = await api.post('/auth/login', user)

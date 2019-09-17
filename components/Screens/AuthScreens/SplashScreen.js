@@ -6,7 +6,7 @@ export default class SplashScreen extends React.Component {
   handleNavigate = () =>
     setTimeout(() => 
     // console.log('asdf')
-    this.props.navigation.navigate('Auth')
+    this.props.navigation.navigate('AuthScreen')
     , 1000)
 
   render() {
