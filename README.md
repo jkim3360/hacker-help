@@ -8,7 +8,7 @@ people have the opportunity to find answers to any blockers or bookmark articles
 Users are greeted with a splash screen and immediately redirected to a list of random Stack Overflow articles. Users can
 search for certain topics in the input bar, which will render a new list upon typing. Tapping on the title will navigate to the
 Articles tab, which is a WebView browser that will render the article page, and bookmarks toggle switches add and remove articles from the
-bookmarks tab.
+bookmarks tab. Developers can read solutions to their coding challenges or compile a list of articles for future reference through the bookmarks tab.
 
 ![Alt Text](https://media.giphy.com/media/lq9fI5lDsigBho2Xap/giphy.gif)
 
