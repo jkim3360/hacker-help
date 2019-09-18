@@ -36,7 +36,6 @@ export default class BookMarks extends Component {
 
   makeRequest = async () => {
     const bookMarksData = await apiCall.get('/bookmarks')
-    console.log(bookmarksData.data)
     this.setState({
       bookMarksData: bookMarksData.data,
       isLoading: false,
